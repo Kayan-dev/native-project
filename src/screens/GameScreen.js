@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button } from "react-native";
 import { DeviceMotion } from "expo-sensors";
+import MyButton from "../components/MyButton";
 
 export default function GameScreen() {
   const [color, set_color] = useState("white");
@@ -26,6 +27,27 @@ export default function GameScreen() {
     return () => subscription.remove();
   }, [set_color, paused]);
 
+  const share = async (color) => {
+    try {
+      const result = await Share.share({
+        message: `Check out this wonderful color: ${color}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("shared with activity type of", result.activityType);
+        } else {
+          console.log("shared");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("dismissed");
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+      console.log("failed sharing:", error);
+    }
+  };
+
   return (
     <View
       style={{
@@ -37,11 +59,17 @@ export default function GameScreen() {
         backgroundColor: color,
       }}
     >
+      <MyButton
+        title="Share this color!"
+        onPress={() => {
+          share(color);
+        }}
+      />
       <Text style={{ marginBottom: 20, fontSize: 24, fontWeight: "bold" }}>
         Choose your color!
       </Text>
       <View style={{ marginBottom: 20 }}>
-        <Button
+        <MyButton
           title={paused ? "Restart" : "Pause"}
           onPress={() => {
             set_paused(!paused);
