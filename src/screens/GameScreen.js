@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Share } from "react-native";
 import { DeviceMotion } from "expo-sensors";
 import MyButton from "../components/MyButton";
 
-export default function GameScreen() {
+export default function GameScreen({ route, navigation }) {
   const [color, set_color] = useState("white");
   const [paused, set_paused] = useState(false);
+  const { count } = route.params;
 
   useEffect(() => {
     DeviceMotion.setUpdateInterval(250);
@@ -59,6 +60,9 @@ export default function GameScreen() {
         backgroundColor: color,
       }}
     >
+      <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+        Times i've been here: {count}
+      </Text>
       <MyButton
         title="Share this color!"
         onPress={() => {
@@ -76,6 +80,10 @@ export default function GameScreen() {
           }}
         />
       </View>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate("Home", { count: count + 1 })}
+      />
     </View>
   );
 }
