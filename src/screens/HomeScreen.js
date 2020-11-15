@@ -26,7 +26,9 @@ export default function HomeScreen({ route, navigation }) {
       </Text>
       <Button
         title="Go to Game"
-        onPress={() => navigation.navigate("Game", { count: count + 1 })}
+        onPress={() =>
+          navigation.navigate("Game", { screen: "Play", params: { count } })
+        }
       />
     </View>
   );
